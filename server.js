@@ -18,5 +18,5 @@ const Router = require('./modules/routes/index.js');
 app.use('/' , Router);
 
 app.listen(config.port , () => {
-    console.log(`Server running at Port ${config.port}`)
+    console.log(`Server is running at Port ${config.port}`)
 }); 
