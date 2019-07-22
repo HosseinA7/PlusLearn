@@ -1,19 +1,19 @@
 const Controller = require(`${config.path.controller}/Controller`);
-const UserTransform = require(`${config.path.transform}/v1/UserTransform`);
 const bcrypt = require('bcrypt');
+const { check, validationResult } = require('express-validator');
 
-module.exports = new class CourseController extends Controller {
+module.exports = new class AuthController extends Controller {
     register(req , res) {  
-        req.checkBody('username' , 'وارد کردن فیلد نام الزامیست').notEmpty();
-        req.checkBody('email' , 'وارد کردن فیلد ایمیل الزامیست').notEmpty();
-        req.checkBody('password' , 'وارد کردن فیلد پسورد الزامیست').notEmpty();
-        req.checkBody('email' , 'فرمت اییمل وارد شده صحیح نیست').isEmail();
+        // check('username' , 'وارد کردن فیلد نام الزامیست').isEmpty();
+        // check('email' , 'وارد کردن فیلد ایمیل الزامیست').isEmpty();
+        // check('password' , 'وارد کردن فیلد پسورد الزامیست').isEmpty();
+        // check('email' , 'فرمت ایمیل وارد شده صحیح نیست').isEmail();
         
-        if(this.showValidationErrors(req, res)) 
-            return;
+        // if(this.showValidationErrors(req, res)) 
+        //     return;
 
         this.model.User({
-            username : req.body.username,
+            username : req.body.username,  
             email : req.body.email,
             password : req.body.password
         }).save(err => {
@@ -27,7 +27,7 @@ module.exports = new class CourseController extends Controller {
                     throw err;
                 }
             }
-
+            
             return res.json({
                 data : 'کاربر با موفقیت عضو وبسایت شد',
                 success : true
@@ -36,8 +36,9 @@ module.exports = new class CourseController extends Controller {
     }
 
     login(req , res) {
-        req.checkBody('email' , 'وارد کردن فیلد ایمیل الزامیست').notEmpty();
-        req.checkBody('password' , 'وارد کردن فیلد پسورد الزامیست').notEmpty();
+        check('email' , 'وارد کردن فیلد ایمیل الزامیست').not().isEmpty();
+        check('password' , 'وارد کردن فیلد پسورد الزامیست').not().isEmpty();
+
 
         if(this.showValidationErrors(req, res)) 
             return;
@@ -52,8 +53,8 @@ module.exports = new class CourseController extends Controller {
                 });
 
             bcrypt.compare(req.body.password , user.password , (err , status) => {
-
-                if(! status) 
+                
+                if(status == false) 
                     return res.status(422).json({
                         success : false,
                         data : 'پسورد وارد شده صحیح نمی باشد'
@@ -61,7 +62,7 @@ module.exports = new class CourseController extends Controller {
               
 
                 return res.json({
-                    data : new UserTransform().transform(user,true),
+                    data : user, //new UserTransform().transform(user,true),
                     success : true
                 });  
             })

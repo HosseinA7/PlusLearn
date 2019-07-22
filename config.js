@@ -8,7 +8,7 @@ module.exports = {
             api : path.resolve('./modules/controllers/api'),
         },
         model : path.resolve('./modules/models'),
-        transform : path.resolve('./modules/transforms'),
-        controller : path.resolve('./modules/controllers'),
+        //transform : path.resolve('./modules/transforms'),
+        controller : path.resolve('./modules/controllers/api'),
     }
 }
